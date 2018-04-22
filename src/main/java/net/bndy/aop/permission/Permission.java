@@ -9,4 +9,5 @@ import java.lang.annotation.Target;
 @Target(value = ElementType.METHOD)
 public @interface Permission {
 	String code();
+	Class<? extends PermissionContext> contextCls();
 }
