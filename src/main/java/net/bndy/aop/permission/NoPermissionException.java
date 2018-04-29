@@ -15,7 +15,7 @@ public class NoPermissionException extends Exception {
 	
 	@Override
 	public String getMessage() {
-		return "No Permission for '" + this.getPermissionCode() +  "'";
+		return "No '" + this.getPermissionCode() +  "' Permission";
 	}
 
 }
