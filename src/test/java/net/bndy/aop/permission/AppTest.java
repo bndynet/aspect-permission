@@ -1,5 +1,7 @@
 package net.bndy.aop.permission;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -88,7 +90,12 @@ public class AppTest {
 	}
 	
 	@Test
-	public void testParser() {
-		new ConditionExpresionParser("((1 and 2) or (3 or 4)) and (5 or 7)").result();
+	public void textToExpression() {
+		String vString = "";
+	}
+	
+	@Test
+	public void testParser() throws PermissionExpressionParseError {
+		new ConditionExpresionParser("((1 and 2) or (3 or 4)) and (5 or 7) and !9").result();
 	}
 }
