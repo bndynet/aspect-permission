@@ -13,6 +13,10 @@ public class ConditionExpression {
 		this.extraValue = extraValue;
 	}
 	
+	public ConditionExpression(String value) {
+		this.value = value;
+	}
+	
 	public ConditionExpression(ConditionOperation operation, ConditionExpression exp1, ConditionExpression exp2) {
 		this.operation = operation;
 		this.value = exp1;
@@ -55,6 +59,10 @@ public class ConditionExpression {
 			rightValue = true;
 		}
 		
+		if (this.operation == null) {
+			return leftValue;
+		}
+		
 		switch (this.operation) {
 			case NOT:
 				return !leftValue;
@@ -66,18 +74,26 @@ public class ConditionExpression {
 				return leftValue || rightValue;
 
 			default:
-				return false;
+				return leftValue;
 		}
 	}
 	
 	@Override
 	public String toString() {
-		switch (this.operation) {
-		case NOT:
-			return "!" + this.value.toString();
+		if (this.operation == null) {
+			return this.value.toString();
+		}
 
-		default:
-			return "(" + this.value.toString() + " " + this.operation + " " + this.extraValue.toString() + ")";
+		switch (this.operation) {
+			case NOT:
+				return "!" + this.value.toString();
+
+			case OR:
+			case AND:
+				return "(" + this.value.toString() + " " + this.operation + " " + this.extraValue.toString() + ")";
+
+			default:
+				return "No handler for this operator '" + this.operation + "'!";
 		}
 	}
 }

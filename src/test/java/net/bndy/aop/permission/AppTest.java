@@ -90,12 +90,30 @@ public class AppTest {
 	}
 	
 	@Test
-	public void textToExpression() {
-		String vString = "";
+	public void textToExpressionString() {
+		String s = "(1 and 3) or (4 and 5) and 4 or 6";
+		System.out.println(s + "=>" + new ConditionExpression(s).toString());
 	}
 	
 	@Test
-	public void testParser() throws PermissionExpressionParseError {
-		new ConditionExpresionParser("((1 and 2) or (3 or 4)) and (5 or 7) and !9").result();
+	public void parse() throws PermissionExpressionParseError {
+		List<String> lst = new ArrayList<>();
+		lst.add("1");
+		lst.add("2");
+		lst.add("3");
+		lst.add("4");
+		lst.add("5");
+		Assert.assertEquals(new ConditionExpresionParser("1").result().result(lst), true);
+		Assert.assertEquals(new ConditionExpresionParser("!1").result().result(lst), false);
+		Assert.assertEquals(new ConditionExpresionParser("!9").result().result(lst), true);
+		Assert.assertEquals(new ConditionExpresionParser("1 and 3").result().result(lst), true);
+		Assert.assertEquals(new ConditionExpresionParser("1 and 7").result().result(lst), false);
+		Assert.assertEquals(new ConditionExpresionParser("(1 and 2) or 8").result().result(lst), true);
+		Assert.assertEquals(new ConditionExpresionParser("(1 and 8) or 2").result().result(lst), true);
+		Assert.assertEquals(new ConditionExpresionParser("(1 and 8) or 9").result().result(lst), false);
+		Assert.assertEquals(new ConditionExpresionParser("(1 and 8) or (2 and 4)").result().result(lst), true);
+		Assert.assertEquals(new ConditionExpresionParser("(1 and 8) or (2 and 6)").result().result(lst), false);
+		Assert.assertEquals(new ConditionExpresionParser("(1 and 8) or (2 and 6) or 3").result().result(lst), true);
+		Assert.assertEquals(new ConditionExpresionParser("(1 and 8) or (2 and 6) or !3").result().result(lst), false);
 	}
 }

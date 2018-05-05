@@ -5,8 +5,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.google.common.base.CaseFormat;
-
 public class ConditionExpresionParser {
 	private final static String PATTERN_GROUP= "\\([^(]+?\\)";
 	
@@ -16,12 +14,16 @@ public class ConditionExpresionParser {
 	private Pattern pattern;
 	private int tempLevel = 0;
 	
-    public ConditionExpresionParser(String conditionString) {
+    public ConditionExpresionParser(String conditionString) throws PermissionExpressionParseError {
+    	if (conditionString.replaceAll("\\(", "").length() != conditionString.replaceAll("\\)", "").length()) {
+    		throw new PermissionExpressionParseError(conditionString);
+    	}
+
     	this.conditionString = conditionString;
     	this.pattern = Pattern.compile(PATTERN_GROUP);
 	}
     
-    public void result() throws PermissionExpressionParseError {
+    public ConditionExpression result() throws PermissionExpressionParseError {
     	String oneValue = this.toOneValue(this.conditionString);
 
     	System.out.println("Values:");
@@ -36,7 +38,8 @@ public class ConditionExpresionParser {
     	
     	ConditionExpression cExpression = this.toExpression(oneValue);
     	System.out.println(cExpression.toString());
-    	// TODO: result boolean result
+    	
+    	return cExpression;
 	}
     
     public String toOneValue(String text) throws PermissionExpressionParseError {
@@ -62,6 +65,11 @@ public class ConditionExpresionParser {
     
     private ConditionExpression toExpression(String conditionUnit) throws PermissionExpressionParseError {
     	String[] tmp = conditionUnit.split(" ");
+    	
+    	if (tmp.length == 1) {
+    		return conditionUnit.startsWith("!") ? new NotConditionExpression(conditionUnit.substring(1)) : new ConditionExpression(conditionUnit);
+    	}
+
 		ConditionExpression result = null;
     	int i = 0;
     	while (i < tmp.length) {
